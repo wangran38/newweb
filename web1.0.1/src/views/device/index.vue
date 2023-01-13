@@ -1,7 +1,7 @@
 <template>
     <div class="app-container">
       <div class="filter-container" style="margin:0 0 2% 0;">
-        <el-input v-model="listQuery.title" placeholder="Title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+        <el-input v-model="listQuery.name" placeholder="输入设备名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
         <!--<el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
           <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
         </el-select>-->
@@ -14,6 +14,9 @@
         <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
           查找
         </el-button>
+        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="resetData">
+        清空
+      </el-button>
         <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
          添加
         </el-button>
@@ -41,26 +44,38 @@
             <span>{{ row.id }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="父级id" width="110px" align="center">
+        <el-table-column label="分类id" width="110px" align="center">
           <template slot-scope="{row}">
-            <span>{{ row.pid }}</span>
+            <span>{{ row.categoryid }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="分类图片" width="110px" align="center">
-          <template slot-scope="{row}">
-           <el-avatar :src="row.image"></el-avatar>
-          </template>
-        </el-table-column>
-       <el-table-column label="分类名称"  align="center">
+
+       <el-table-column label="设备名称"  align="center">
           <template slot-scope="{row}">
             <span>{{ row.title }}</span>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="关键字" width="110px" align="center">
+
+        <el-table-column label="设备厂商" width="160px" align="center">
           <template slot-scope="{row}">
-            <span>{{ row.keywords }}</span>
+           <el-avatar :src="row.factory"></el-avatar>
           </template>
-        </el-table-column> -->
+        </el-table-column>
+        <el-table-column label="负责人" width="160px" align="center">
+          <template slot-scope="{row}">
+           <el-avatar :src="row.contactpeople"></el-avatar>
+          </template>
+        </el-table-column>
+        <el-table-column label="负责人电话" width="160px" align="center">
+          <template slot-scope="{row}">
+           <el-avatar :src="row.phone"></el-avatar>
+          </template>
+        </el-table-column>
+        <el-table-column label="设备状态" width="110px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.status }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
         prop="showStatus"
         header-align="center"
@@ -215,7 +230,7 @@
     }
   </style>
   <script>
-  import { getlist, getoptions, add,edit,del } from '@/api/law/category'
+  import { getlist, getoptions, add,edit,del } from '@/api/equipment/device/device'
   import waves from '@/directive/waves' // waves directive 点击水波纹
   import { parseTime } from '@/utils'
   // import MarkdownEditor from '@/components/MarkdownEditor'
@@ -440,7 +455,7 @@
       },
         /* 删除按钮*/
         handleDelete(row,index) {
-          this.$confirm('确定要删除【' + row.title + '】吗？', '提示', {
+          this.$confirm('确定要删除【' + row.name + '】吗？', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
