@@ -358,7 +358,7 @@
         })
       },
       createData() {
-        if (typeof(this.temp.pid)=="undefined"  || this.temp.pid==0) {
+        if (typeof(this.temp.pid)=="undefined" || this.temp.pid==0) {
   this.temp.pid= 0;
   // console.log(this.temp.pid)
         } else {
@@ -411,7 +411,7 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
                       //处理父级ID
-          if (typeof(this.temp.pid)=="undefined") { //判断是否为空
+          if (typeof(this.temp.pid)=="undefined" || this.temp.pid==0) { //判断是否为空
   this.temp.pid= 0;
   // console.log(this.temp.pid)
         } else {

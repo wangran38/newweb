@@ -46,29 +46,33 @@
         </el-table-column>
         <el-table-column label="分类id" width="110px" align="center">
           <template slot-scope="{row}">
-            <span>{{ row.categoryid }}</span>
+            <span>{{ row.categroyid }}</span>
           </template>
         </el-table-column>
 
        <el-table-column label="设备名称"  align="center">
           <template slot-scope="{row}">
-            <span>{{ row.title }}</span>
+            <span>{{ row.name }}</span>
           </template>
         </el-table-column>
-
+        <el-table-column label="设备编号"  align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.number }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="设备厂商" width="160px" align="center">
           <template slot-scope="{row}">
-           <el-avatar :src="row.factory"></el-avatar>
+            <span>{{ row.factory }}</span>
           </template>
         </el-table-column>
         <el-table-column label="负责人" width="160px" align="center">
           <template slot-scope="{row}">
-           <el-avatar :src="row.contactpeople"></el-avatar>
+            <span>{{ row.contact_people }}</span>
           </template>
         </el-table-column>
         <el-table-column label="负责人电话" width="160px" align="center">
           <template slot-scope="{row}">
-           <el-avatar :src="row.phone"></el-avatar>
+            <span>{{ row.contact_phone }}</span>
           </template>
         </el-table-column>
         <el-table-column label="设备状态" width="110px" align="center">
@@ -80,11 +84,11 @@
         prop="showStatus"
         header-align="center"
         align="center"
-        label="显示状态" width="110px">
+        label="是否激活" width="110px">
         <template slot-scope="{row}">
           <el-switch
-            v-model="row.isshow"
-            :active-value="row.isshow"
+            v-model="row.isopen"
+            :active-value="row.isopen"
             active-text="启用"
             active-color="#13ce66"
             inactive-color="#ff4949"
@@ -125,14 +129,14 @@
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   
       <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-        <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
+        <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="100px" style="width: 80%; margin-left:50px;">
   
           <el-form-item label="所属上级" prop="fid">
     <el-cascader
       :options="optionsdata"
       :props="{ checkStrictly:true, label: 'title', value:'id', children: 'Children', emitPath: 'false'}"
       clearable 
-      v-model="temp.pid"
+      v-model="temp.categroyid"
       value-key="id"
       @focus="groupoption"
       @onchange="groupoption"
@@ -143,10 +147,31 @@
           <!--<el-form-item label="Date" prop="timestamp">
             <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
           </el-form-item>-->
-          <el-form-item label="分类标题" prop="title">
-            <el-input v-model="temp.title" />
+          <el-form-item label="设备名称" prop="name">
+            <el-input v-model="temp.name" />
           </el-form-item>
-          <el-form-item label="分类图片" prop="image">
+          <el-form-item label="设备编号" prop="">
+            <el-input v-model="temp.number" />
+          </el-form-item>
+        <el-form-item label="设备厂商" prop="">
+            <el-input v-model="temp.factory" />
+          </el-form-item>
+          <el-form-item label="厂商联系人" prop="">
+            <el-input v-model="temp.contact_people" />
+          </el-form-item>
+          <el-form-item label="联系电话" prop="">
+            <el-input v-model="temp.contact_phone" />
+          </el-form-item>
+           <el-form-item label="设备备注" prop="content">
+            <el-input type="textarea" v-model="temp.remark" />
+          </el-form-item>
+
+           <el-form-item label="是否显示" prop="isshow">
+            <el-switch
+  v-model="temp.isshow" :active-value='1' :inactive-value='0'>
+</el-switch>
+          </el-form-item>
+          <el-form-item label="设备图片" prop="image">
                   <el-upload
     class="avatar-uploader"
     action="http://file.988cj.com/group1/upload"
@@ -159,28 +184,6 @@
   </el-upload>
   <el-input v-model="temp.image" type="hidden" />
           </el-form-item>
-          <!-- <el-form-item label="关键字" prop="keywords">
-            <el-input v-model="temp.keywords" />
-          </el-form-item> -->
-
-  
-           <el-form-item label="详细说明" prop="content">
-            <el-input type="textarea" v-model="temp.content" />
-            <!-- <template>
-              <div class="editor-container">
-
-      <markdown-editor v-model="temp.content" height="400px" />
-    </div>
-</template> -->
-           
-          </el-form-item>
-
-           <el-form-item label="是否显示" prop="isshow">
-            <el-switch
-  v-model="temp.isshow" :active-value='1' :inactive-value='0'>
-</el-switch>
-          </el-form-item>
-
 
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -282,13 +285,15 @@
         showReviewer: false,
         temp: {
           id: undefined,
-          pid: undefined,
+          categroyid: undefined,
           image: '',
-          keywords: '',
-          title: '',
-          isshow: '',
-          description: '',
-          content:'',
+          name: '',
+          number: '',
+          isopen: '',
+          factory: '',
+          contact_people: '',
+          contact_phone: '',
+          remark:'',
         },
         imgurl:'',
         dialogFormVisible: false,
@@ -300,9 +305,9 @@
         dialogPvVisible: false,
         pvData: [],
         rules: {
-          type: [{ required: true, message: 'type is required', trigger: 'change' }],
-          timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-          title: [{ required: true, message: '分类标题不能为空', trigger: 'blur' }]
+          // type: [{ required: true, message: 'type is required', trigger: 'change' }],
+          // timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
+          // title: [{ required: true, message: '分类标题不能为空', trigger: 'blur' }]
         },
         downloadLoading: false,
         optionsdata: [],
@@ -373,12 +378,12 @@
         })
       },
       createData() {
-        if (typeof(this.temp.pid)=="undefined"  || this.temp.pid==0) {
-  this.temp.pid= 0;
+        if (typeof(this.temp.categroyid)=="undefined"  || this.temp.categroyid==0) {
+  this.temp.categroyid= 0;
   // console.log(this.temp.pid)
         } else {
-            let newpid=this.temp.pid.pop();
-            this.temp.pid=newpid;
+            let newpid=this.temp.categroyid.pop();
+            this.temp.categroyid=newpid;
         }
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
@@ -426,13 +431,13 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
                       //处理父级ID
-          if (typeof(this.temp.pid)=="undefined") { //判断是否为空
-  this.temp.pid= 0;
+          if (typeof(this.temp.categroyid)=="undefined") { //判断是否为空
+  this.temp.categroyid= 0;
   // console.log(this.temp.pid)
         } else {
-          if (Array.isArray(this.temp.pid)==true) {//判断是否更新的为数组，为数组就取最后一个作为他的父级ID
-            let newpid=this.temp.pid.pop();
-            this.temp.pid=newpid;
+          if (Array.isArray(this.temp.categroyid)==true) {//判断是否更新的为数组，为数组就取最后一个作为他的父级ID
+            let newpid=this.temp.categroyid.pop();
+            this.temp.categroyid=newpid;
           }
   
         }
