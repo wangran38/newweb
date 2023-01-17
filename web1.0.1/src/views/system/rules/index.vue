@@ -156,8 +156,8 @@
     </el-popover>
         </el-form-item>
         <el-form-item label="是否菜单" prop="ismenu">
-              <el-radio v-model="temp.ismenu" label="1" border>是</el-radio>
-    <el-radio v-model="temp.ismenu" label="2" border>否</el-radio>
+              <el-radio v-model="temp.ismenu" :label="1" border>是</el-radio>
+    <el-radio v-model="temp.ismenu" :label="0" border>否</el-radio>
           <!--<el-input v-model="temp.ismenu" />-->
         </el-form-item>
         <el-form-item label="菜单路由" prop="pathname">
@@ -232,7 +232,8 @@ import IconSelect from '@/components/SvgSelect/index'
         id: undefined,
         pid: undefined,
         arrpid: '',
-        title: undefined,
+        title: '',
+        pathname: '',
         icon: undefined,
         weigh: undefined,
         ismenu: undefined,
